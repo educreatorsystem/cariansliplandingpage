@@ -120,6 +120,14 @@
       .actions button{flex:1}
       .preview iframe{min-height:440px; height:65vh}
     }
+
+    .demo-try{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:15px;padding:13px 15px;border:1px solid #bdeee1;border-radius:15px;background:linear-gradient(115deg,#f0fffa,#f1f7ff)}
+    .demo-try strong{display:block;font-size:13px;color:#125b55}
+    .demo-try code{display:block;font-size:19px;font-weight:850;letter-spacing:.07em;color:#17283f;margin-top:2px}
+    .demo-try p{margin:1px 0 0;font-size:11px;color:#596e82}
+    .demo-try button{background:linear-gradient(135deg,#0eae87,#08a7bb);box-shadow:0 8px 18px rgba(11,166,146,.2);font-size:12px;padding:11px 16px}
+    .demo-try button:hover{box-shadow:0 12px 24px rgba(11,166,146,.33)}
+    @media(max-width:410px){.demo-try button{width:100%}.demo-try code{font-size:17px}}
   </style>
 </head>
 <body>
@@ -149,6 +157,14 @@
         </div>
         <div class="help">Masukkan 12 digit nombor KP, dengan atau tanpa sempang.</div>
       </form>
+      <div class="demo-try" aria-label="Nombor kad pengenalan demo">
+        <div>
+          <strong>✨ Cuba Demo Percuma</strong>
+          <code>090100000003</code>
+          <p>Salin nombor ini untuk cuba carian slip.</p>
+        </div>
+        <button id="demoBtn" type="button" aria-label="Salin nombor KP demo dan isikan dalam carian">📋 Salin &amp; Isi</button>
+      </div>
     </div>
 
     <div id="alert" class="alert" role="status" aria-live="polite"></div>
@@ -182,6 +198,17 @@ const $=s=>document.querySelector(s);
 const form=$('#form'), input=$('#ic'), searchBtn=$('#searchBtn'), list=$('#list'),results=$('#results'), preview=$('#preview'),viewer=$('#viewer');
 const state={ic:'',searchId:0,blobUrl:null,busy:false};
 $('#year').textContent=new Date().getFullYear();
+$('#demoBtn').addEventListener('click',async()=>{
+  const demoIC='090100000003';
+  input.value=demoIC;
+  input.focus();
+  const btn=$('#demoBtn');
+  try{
+    if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(demoIC);btn.textContent='✓ Disalin & Diisi';}
+    else{btn.textContent='✓ Sudah Diisi';}
+  }catch(err){btn.textContent='✓ Sudah Diisi';}
+  setTimeout(()=>{btn.textContent='📋 Salin & Isi';},2400);
+});
 function alertMsg(msg,type='error'){$('#alert').textContent=msg;$('#alert').className='alert on '+type;}
 function clearAlert(){$('#alert').className='alert';$('#alert').textContent='';}
 function clearPreview(){preview.classList.remove('on');viewer.removeAttribute('src');if(state.blobUrl){URL.revokeObjectURL(state.blobUrl);state.blobUrl=null;}}
